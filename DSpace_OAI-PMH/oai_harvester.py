@@ -23,9 +23,6 @@ def get_records(records, parser, nsmap, root_dir):
     for record in records:
         spinner.next()
         c += 1
-        if c ==5:
-            break
-
         tree = etree.fromstring(str(record), parser)
         id = tree.xpath("//oai:record/oai:header/oai:identifier", namespaces=nsmap)[0].text.replace(":", "_").replace(
             "/", "_")
