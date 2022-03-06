@@ -1,0 +1,10 @@
+certifi==2021.10.8
+charset-normalizer==2.0.12
+click==8.0.4
+idna==3.3
+lxml==4.8.0
+progress==1.6
+requests==2.27.1
+Sickle==0.7.0
+tqdm==4.63.0
+urllib3==1.26.8
