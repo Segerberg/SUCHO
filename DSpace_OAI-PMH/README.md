@@ -38,6 +38,11 @@ DSpaces OAI-PMH endpoints
 python dspace_download.py /path/to/dir -r http://localhost:8081 -r proper.domain:8081
 </pre>  
 
-## Todo
-
-* Figure out how to handle Dspace repos who only provides DC Metadata. 
+## dspace_ia.py
+Used to generate a list of all records and media links.
+The script also attempts to get links for the start page and the startpages navigation links.
+The script takes a single argument (url) which should point to the oai endpoint. like so http://mtom.pgasa.dp.ua/oai 
+use > to pipe the output to a .txt
+<pre>
+python dspace_ia.py http://mtom.pgasa.dp.ua/oai > output.txt
+</pre>
