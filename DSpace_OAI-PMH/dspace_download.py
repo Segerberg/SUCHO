@@ -1,7 +1,6 @@
 import logging
 import os
 import datetime
-import uuid
 
 import click
 import requests
@@ -9,9 +8,9 @@ from lxml import etree
 from tqdm.auto import tqdm
 
 
-def download_file(url, savepath):
+def download_file(url, savepath, file_id):
     suffix = url.split('.')[-1]
-    local_filename = f"{uuid.uuid4()}.{suffix}"
+    local_filename = f"{file_id}.{suffix}"
     response = requests.get(url, stream=True)
 
     with tqdm.wrapattr(
@@ -57,13 +56,14 @@ def get_data(input_dir, replace):
                         mfiles = grp.xpath("mets:file", namespaces=nsmap)
                         for r in mfiles:
                             href = r.xpath("mets:FLocat/@xlink:href", namespaces=nsmap)
+                            file_id = r.xpath("@ID", namespaces=nsmap)[0]
                             url = href[0]
                             if replace:
                                 url = href[0].replace(replace[0], replace[1])
 
-                            download_file(url, root)
+                            download_file(url, root, file_id)
                             try:
-                                download_file(url, root)
+                                download_file(url, root, file_id)
 
                             except requests.exceptions.ConnectionError:
                                 logger.error(f'Failed to download {url}')
