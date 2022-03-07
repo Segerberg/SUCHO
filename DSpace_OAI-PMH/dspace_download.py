@@ -1,6 +1,7 @@
 import logging
 import os
 import datetime
+import uuid
 
 import click
 import requests
@@ -9,7 +10,8 @@ from tqdm.auto import tqdm
 
 
 def download_file(url, savepath):
-    local_filename = url.split('/')[-1]
+    suffix = url.split('.')[-1]
+    local_filename = f"{uuid.uuid4()}.{suffix}"
     response = requests.get(url, stream=True)
 
     with tqdm.wrapattr(
