@@ -45,7 +45,7 @@ def get_data(input_dir, replace):
         count += 1
         tqdm.write(f"{count}/{total_records}")
         for file in files:
-            if file.endswith(".xml"):
+            if file.endswith(".xml") and len(files) == 1:
 
                 with open(os.path.join(root, file), 'r', encoding='utf-8', errors='ignore') as file:
                     metsfile = file.read()
@@ -61,7 +61,6 @@ def get_data(input_dir, replace):
                             if replace:
                                 url = href[0].replace(replace[0], replace[1])
 
-                            download_file(url, root, file_id)
                             try:
                                 download_file(url, root, file_id)
 
