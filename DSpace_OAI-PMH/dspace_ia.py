@@ -27,15 +27,12 @@ def main(url):
 
     for record in records:
         tree = etree.fromstring(str(record), parser)
-
-        identifiers = tree.xpath("//oai:record/oai:metadata/oai_dc:dc/dc:identifier", namespaces=nsmap)
-        relations = tree.xpath("//oai:record/oai:metadata/oai_dc:dc/dc:relation", namespaces=nsmap)
-        for relation in relations:
-            if validators.url(relation.text):
-                print(relation.text)
-        for identifer in identifiers:
-            if validators.url(identifer.text):
-                print(identifer.text)
+        dc = tree.xpath("//oai:record/oai:metadata/oai_dc:dc", namespaces=nsmap)
+        if len(dc) >= 1:
+            dc = dc[0]
+            for element in dc:
+                if validators.url(element.text):
+                    print(element.text)
 
 
 if __name__ == '__main__':
