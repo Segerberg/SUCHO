@@ -4,7 +4,7 @@ import sys
 import validators
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 def get_nav_links(url):
     print(url)
@@ -17,7 +17,7 @@ def get_nav_links(url):
             if validators.url(link['href']):
                 print(link['href'])
 
-def main(url):
+def get_records(url):
     sickle = Sickle(url)
     records = sickle.ListRecords(metadataPrefix='oai_dc')
     parser = etree.XMLParser()
@@ -36,7 +36,19 @@ def main(url):
                         print(element.text)
                 except TypeError:
                     pass
+    return sickle
 
+def main(url):
+    paths = ["/oai/openaire","/oai/request", "/oai2/request"]
+    try:
+        get_records(url)
+    except:
+        for path in paths:
+            u = urlparse(url)
+            try:
+                get_records(f'{u.scheme}://{u.netloc}{path}')
+            except:
+                continue
 
 if __name__ == '__main__':
     url = sys.argv[1]
@@ -45,3 +57,5 @@ if __name__ == '__main__':
     get_nav_links(f"{scheme}://{hostname}")
 
     main(url)
+
+
