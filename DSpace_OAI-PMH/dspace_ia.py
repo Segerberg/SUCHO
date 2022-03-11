@@ -31,8 +31,11 @@ def main(url):
         if len(dc) >= 1:
             dc = dc[0]
             for element in dc:
-                if validators.url(element.text):
-                    print(element.text)
+                try:
+                    if validators.url(element.text):
+                        print(element.text)
+                except TypeError:
+                    pass
 
 
 if __name__ == '__main__':
