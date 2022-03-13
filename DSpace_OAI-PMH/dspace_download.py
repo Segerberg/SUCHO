@@ -9,17 +9,19 @@ from tqdm.auto import tqdm
 
 
 def download_file(url, savepath, file_id):
-    suffix = url.split('.')[-1]
+    suffix = url.split('.')[-1]        
     local_filename = f"{file_id}.{suffix}"
-    response = requests.get(url, stream=True)
+    
+    if not os.path.exists(os.path.join(savepath, local_filename)):
+        response = requests.get(url, stream=True)
 
-    with tqdm.wrapattr(
-            open(os.path.join(savepath, local_filename), "wb"), "write",
-            unit='B', unit_scale=True, unit_divisor=1024, miniters=1,
-            desc=local_filename, total=int(response.headers.get('content-length', 0))
-    ) as fout:
-        for chunk in response.iter_content(chunk_size=4096):
-            fout.write(chunk)
+        with tqdm.wrapattr(
+                open(os.path.join(savepath, local_filename), "wb"), "write",
+                unit='B', unit_scale=True, unit_divisor=1024, miniters=1,
+                desc=local_filename, total=int(response.headers.get('content-length', 0))
+        ) as fout:
+            for chunk in response.iter_content(chunk_size=4096):
+                fout.write(chunk)
 
 
 @click.command()
