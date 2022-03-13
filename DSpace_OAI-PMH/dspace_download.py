@@ -9,7 +9,7 @@ from tqdm.auto import tqdm
 
 
 def download_file(url, savepath, file_id):
-    suffix = url.split('.')[-1]        
+    suffix = url.split('.')[-1]
     local_filename = f"{file_id}.{suffix}"
     
     if not os.path.exists(os.path.join(savepath, local_filename)):
