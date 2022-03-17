@@ -6,9 +6,9 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
-def get_nav_links(url):
+def get_nav_links(url, headers):
     yield url
-    r = requests.get(url)
+    r = requests.get(url, headers=headers)
     soup = BeautifulSoup(r.content, 'html.parser')
     nav = soup.find_all('nav')
     for n in nav:
@@ -17,8 +17,8 @@ def get_nav_links(url):
             if validators.url(link['href']):
                 yield link['href']
 
-def get_records(url):
-    sickle = Sickle(url)
+def get_records(url, headers):
+    sickle = Sickle(url, headers=headers)
     records = sickle.ListRecords(metadataPrefix='oai_dc')
     parser = etree.XMLParser()
     nsmap = {"oai": "http://www.openarchives.org/OAI/2.0/",
@@ -38,10 +38,10 @@ def get_records(url):
                     pass
     return sickle
 
-def main(url):
+def main(url, headers):
     paths = ["/oai/openaire","/oai/request", "/oai2/request"]
     try:
-        yield from get_records(url)
+        yield from get_records(url, headers)
     except:
         for path in paths:
             u = urlparse(url)
@@ -51,13 +51,16 @@ def main(url):
                 continue
 
 if __name__ == '__main__':
+    headers = {
+        'User-Agent': 'OAI-Harvester'
+    }
     url = sys.argv[1]
     scheme= urlparse(url).scheme
     hostname = urlparse(url).hostname
-    for link in get_nav_links(f"{scheme}://{hostname}"):
+    for link in get_nav_links(f"{scheme}://{hostname}", headers):
       print(link)
 
-    for record in main(url):
+    for record in main(url, headers):
       print(record)
 
 
