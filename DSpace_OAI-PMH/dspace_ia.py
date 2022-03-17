@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
 def get_nav_links(url):
-    print(url)
+    yield url
     r = requests.get(url)
     soup = BeautifulSoup(r.content, 'html.parser')
     nav = soup.find_all('nav')
@@ -15,7 +15,7 @@ def get_nav_links(url):
         links = n.find_all('a', href=True)
         for link in links:
             if validators.url(link['href']):
-                print(link['href'])
+                yield link['href']
 
 def get_records(url):
     sickle = Sickle(url)
@@ -33,7 +33,7 @@ def get_records(url):
             for element in dc:
                 try:
                     if validators.url(element.text):
-                        print(element.text)
+                        yield element.text
                 except TypeError:
                     pass
     return sickle
@@ -41,12 +41,12 @@ def get_records(url):
 def main(url):
     paths = ["/oai/openaire","/oai/request", "/oai2/request"]
     try:
-        get_records(url)
+        yield from get_records(url)
     except:
         for path in paths:
             u = urlparse(url)
             try:
-                get_records(f'{u.scheme}://{u.netloc}{path}')
+                yield from get_records(f'{u.scheme}://{u.netloc}{path}')
             except:
                 continue
 
@@ -54,8 +54,10 @@ if __name__ == '__main__':
     url = sys.argv[1]
     scheme= urlparse(url).scheme
     hostname = urlparse(url).hostname
-    get_nav_links(f"{scheme}://{hostname}")
+    for link in get_nav_links(f"{scheme}://{hostname}"):
+      print(link)
 
-    main(url)
+    for record in main(url):
+      print(record)
 
 
