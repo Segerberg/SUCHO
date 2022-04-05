@@ -9,7 +9,6 @@ import multiprocessing
 def main(root_dir):
     data = {
         "warcs": [],
-        "total_records": 0
     }
 
     warcs_to_analyse = []
